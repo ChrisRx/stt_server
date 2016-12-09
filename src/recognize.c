@@ -44,13 +44,15 @@ void recognizer_destroy() {
     }
 }
 
-int recognize_from_buffer(char *buffer, size_t buffer_length, char **message) {
+int recognize_from_buffer(char *buffer, size_t buffer_length, const char **message) {
     ps_start_utt(ps);
     ps_process_raw(ps, (int16*)buffer, buffer_length/sizeof(int16), FALSE, FALSE);
     uint8 in_speech = ps_get_in_speech(ps);
     const char* hyp = ps_get_hyp(ps, NULL);
     if (hyp != NULL) {
         *message = (char*)hyp;
+    } else {
+        printf("Nope something bad happened\n");
     }
     ps_end_utt(ps);
     return 0;

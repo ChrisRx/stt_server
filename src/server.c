@@ -33,16 +33,19 @@ static lwan_http_status_t default_route(lwan_request_t *request, lwan_response_t
 }
 
 static lwan_http_status_t recognize(lwan_request_t *request, lwan_response_t *response, void *data) {
+    static const char NONE[] = "None";
     if (!request->header.body) {
         return HTTP_OK;
     }
-    char *message = NULL;
+    const char *message = NULL;
     recognize_from_buffer(request->header.body->value, request->header.body->len, &message);
     if (message == NULL) {
-        message = "None";
+        response->mime_type = "text/plain";
+        strbuf_set_static(response->buffer, NONE, sizeof(NONE) - 1);
+        return HTTP_OK;
     }
     response->mime_type = "text/plain";
-    strbuf_set_static(response->buffer, message, sizeof(*message) - 1);
+    strbuf_set_static(response->buffer, message, strlen(message));
     return HTTP_OK;
 }
 

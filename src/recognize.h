@@ -25,6 +25,6 @@
 
 ps_decoder_t* recognizer_create();
 void recognizer_destroy();
-int recognize_from_buffer(char *buffer, size_t buffer_length, char **message);
+int recognize_from_buffer(char *buffer, size_t buffer_length, const char **message);
 
 #endif

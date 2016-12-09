@@ -3,8 +3,11 @@ FROM phusion/baseimage
 CMD ["/sbin/my_init"]
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install curl build-essentials bison git cmake zlib1g-dev pkg-config -y && \
-    apt-get autoclean && \
+    DEBIAN_FRONTEND=noninteractive apt-get install curl build-essential bison git cmake zlib1g-dev pkg-config autoconf libtool python-dev swig -y
+
+#RUN DEBIAN_FRONTEND=noninteractive apt-get install -y
+
+RUN apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/cmusphinx/sphinxbase
@@ -30,9 +33,12 @@ RUN cd /lwan && \
     make && \
     make install
 
-
-RUN git clone https://github.com/ChrisRx/stt_server
-RUN cd /stt_server && \
+ADD . /app/
+RUN cd /app && \
     make
 
-CMD ["/stt_server/bin/stt_server"]
+ENV LD_LIBRARY_PATH=/usr/lib:/usr/local/lib
+
+CMD ["/app/bin/stt_server"]
+
+EXPOSE 8080
